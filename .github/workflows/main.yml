@@ -9,35 +9,30 @@ jobs:
       - name: Checkout Repository
         uses: actions/checkout@v4
 
-      - name: Unzip Project Components
+      - name: Extract Project Files Cleanly
         run: |
           sudo apt-get install unzip -y
           
-          # Unzip files directly into the root folder 
+          # Force clean extraction directly to root
+          unzip -o ProjectSettings.zip
           unzip -o Assets.zip
           unzip -o Packages.zip
-          unzip -o ProjectSettings.zip
           
           # Fix nested folder structures if they exist
           if [ -d "ProjectSettings/ProjectSettings" ]; then
             mv ProjectSettings/ProjectSettings/* ProjectSettings/
           fi
+          if [ -d "Assets/Assets" ]; then
+            mv Assets/Assets/* Assets/
+          fi
           if [ -d "Packages/Packages" ]; then
             mv Packages/Packages/* Packages/
           fi
           
-          # Remove raw zip files to save workspace disk space
           rm -f *.zip
 
-      - name: WebGL Compilation Engine
+      - name: WebGL Compilation Engine (License Free)
         uses: game-ci/unity-builder@v4
-        env:
-          UNITY_LICENSE: ${{ secrets.UNITY_LICENSE }}
         with:
           targetPlatform: WebGL
-
-      - name: Package Output for Itch
-        uses: actions/upload-artifact@v4
-        with:
-          name: Slendytubbies3_WebGL_Build
-          path: build/WebGL
+          unityVersion: auto
