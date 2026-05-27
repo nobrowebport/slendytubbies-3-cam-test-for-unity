@@ -1,0 +1,31 @@
+name: Build WebGL Game
+on: [push, workflow_dispatch]
+
+jobs:
+  build:
+    name: Compile WebGL Build
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Unzip Project Components
+        run: |
+          sudo apt-get install unzip -y
+          unzip -o Assets.zip
+          unzip -o Packages.zip
+          unzip -o ProjectSettings.zip
+          rm -f *.zip
+
+      - name: WebGL Compilation Engine
+        uses: game-ci/unity-builder@v4
+        env:
+          UNITY_LICENSE: ${{ secrets.UNITY_LICENSE }}
+        with:
+          targetPlatform: WebGL
+
+      - name: Package Output for Itch
+        uses: actions/upload-artifact@v4
+        with:
+          name: Slendytubbies3_WebGL_Build
+          path: build/WebGL
