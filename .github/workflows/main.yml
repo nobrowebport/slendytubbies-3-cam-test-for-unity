@@ -17,10 +17,10 @@ jobs:
           unzip -o Packages.zip
           rm -f *.zip
 
-      - name: Pure WebAssembly Build Pipeline
-        uses: sstainba/unity-builder@v1
-        with:
-          build-target: WebGL
+      - name: Non-Unity WebGL Assembly Compiler
+        run: |
+          npm install -g unity-webassembly-compiler
+          unity-webassembly-compiler --projectDir . --outputDir build/WebGL
 
       - name: Package Output for Itch
         uses: actions/upload-artifact@v4
