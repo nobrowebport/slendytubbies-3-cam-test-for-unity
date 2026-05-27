@@ -12,9 +12,21 @@ jobs:
       - name: Unzip Project Components
         run: |
           sudo apt-get install unzip -y
+          
+          # Unzip files directly into the root folder 
           unzip -o Assets.zip
           unzip -o Packages.zip
           unzip -o ProjectSettings.zip
+          
+          # Fix nested folder structures if they exist
+          if [ -d "ProjectSettings/ProjectSettings" ]; then
+            mv ProjectSettings/ProjectSettings/* ProjectSettings/
+          fi
+          if [ -d "Packages/Packages" ]; then
+            mv Packages/Packages/* Packages/
+          fi
+          
+          # Remove raw zip files to save workspace disk space
           rm -f *.zip
 
       - name: WebGL Compilation Engine
