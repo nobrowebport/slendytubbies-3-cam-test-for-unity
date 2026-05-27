@@ -12,27 +12,18 @@ jobs:
       - name: Extract Project Files Cleanly
         run: |
           sudo apt-get install unzip -y
-          
-          # Force clean extraction directly to root
           unzip -o ProjectSettings.zip
           unzip -o Assets.zip
           unzip -o Packages.zip
-          
-          # Fix nested folder structures if they exist
-          if [ -d "ProjectSettings/ProjectSettings" ]; then
-            mv ProjectSettings/ProjectSettings/* ProjectSettings/
-          fi
-          if [ -d "Assets/Assets" ]; then
-            mv Assets/Assets/* Assets/
-          fi
-          if [ -d "Packages/Packages" ]; then
-            mv Packages/Packages/* Packages/
-          fi
-          
           rm -f *.zip
 
-      - name: WebGL Compilation Engine (License Free)
-        uses: game-ci/unity-builder@v4
+      - name: Pure WebAssembly Build Pipeline
+        uses: sstainba/unity-builder@v1
         with:
-          targetPlatform: WebGL
-          unityVersion: auto
+          build-target: WebGL
+
+      - name: Package Output for Itch
+        uses: actions/upload-artifact@v4
+        with:
+          name: Slendytubbies3_WebGL_Build
+          path: build/WebGL
